@@ -26,6 +26,16 @@ class LookUpScreenController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setUpNavigationBar()
+    }
+    
+    func setUpNavigationBar()
+    {
+        self.tabBarController?.navigationItem.title = "Look Up"
+        self.tabBarController?.navigationItem.rightBarButtonItem =  nil
+    }
     
 }
 

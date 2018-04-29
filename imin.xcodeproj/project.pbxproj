@@ -19,6 +19,9 @@
 		19E32C55209290A20078B5DD /* LookUpScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C54209290A20078B5DD /* LookUpScreenController.swift */; };
 		19E32C57209290B80078B5DD /* GoingScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C56209290B80078B5DD /* GoingScreenController.swift */; };
 		19E32C59209290C70078B5DD /* ProfileScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C58209290C70078B5DD /* ProfileScreenController.swift */; };
+		19E32C5B209329880078B5DD /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C5A209329880078B5DD /* SettingsController.swift */; };
+		19E32C5D20951B6C0078B5DD /* AboutUsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C5C20951B6C0078B5DD /* AboutUsController.swift */; };
+		19E32C5F2095FFF70078B5DD /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 19E32C5E2095FFF70078B5DD /* credentials.plist */; };
 		3931FF65C838CACA0C3F2BFA /* Pods_imin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFACC48D59232F73AB830ECB /* Pods_imin.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +40,9 @@
 		19E32C54209290A20078B5DD /* LookUpScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookUpScreenController.swift; sourceTree = "<group>"; };
 		19E32C56209290B80078B5DD /* GoingScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoingScreenController.swift; sourceTree = "<group>"; };
 		19E32C58209290C70078B5DD /* ProfileScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenController.swift; sourceTree = "<group>"; };
+		19E32C5A209329880078B5DD /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		19E32C5C20951B6C0078B5DD /* AboutUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsController.swift; sourceTree = "<group>"; };
+		19E32C5E2095FFF70078B5DD /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		BFACC48D59232F73AB830ECB /* Pods_imin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_imin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD1D01F5F008E3BC1AD07B12 /* Pods-imin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imin/Pods-imin.debug.xcconfig"; sourceTree = "<group>"; };
 		DAD3E646E00C02DA6AC2917E /* Pods-imin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imin.release.xcconfig"; path = "Pods/Target Support Files/Pods-imin/Pods-imin.release.xcconfig"; sourceTree = "<group>"; };
@@ -83,6 +89,7 @@
 				1905583C209093A00071097A /* LaunchScreen.storyboard */,
 				1905583F209093A00071097A /* Info.plist */,
 				19E32C4B209255B60078B5DD /* GoogleService-Info.plist */,
+				19E32C5E2095FFF70078B5DD /* credentials.plist */,
 			);
 			path = imin;
 			sourceTree = "<group>";
@@ -104,6 +111,8 @@
 				19E32C54209290A20078B5DD /* LookUpScreenController.swift */,
 				19E32C56209290B80078B5DD /* GoingScreenController.swift */,
 				19E32C58209290C70078B5DD /* ProfileScreenController.swift */,
+				19E32C5A209329880078B5DD /* SettingsController.swift */,
+				19E32C5C20951B6C0078B5DD /* AboutUsController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -197,6 +206,7 @@
 			files = (
 				1905583E209093A00071097A /* LaunchScreen.storyboard in Resources */,
 				19E32C4C209255B60078B5DD /* GoogleService-Info.plist in Resources */,
+				19E32C5F2095FFF70078B5DD /* credentials.plist in Resources */,
 				1905583B209093A00071097A /* Assets.xcassets in Resources */,
 				19055839209093A00071097A /* Main.storyboard in Resources */,
 			);
@@ -230,6 +240,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-imin/Pods-imin-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
@@ -237,6 +248,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
@@ -253,9 +265,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-imin/Pods-imin-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -269,12 +288,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19E32C5B209329880078B5DD /* SettingsController.swift in Sources */,
 				19055836209093A00071097A /* LoginController.swift in Sources */,
 				19E32C532092908F0078B5DD /* HomeScreenController.swift in Sources */,
 				19E32C57209290B80078B5DD /* GoingScreenController.swift in Sources */,
 				19055834209093A00071097A /* AppDelegate.swift in Sources */,
 				19E32C55209290A20078B5DD /* LookUpScreenController.swift in Sources */,
 				19E32C59209290C70078B5DD /* ProfileScreenController.swift in Sources */,
+				19E32C5D20951B6C0078B5DD /* AboutUsController.swift in Sources */,
 				19E32C51209258810078B5DD /* TabBarMenuController.swift in Sources */,
 				19E32C4A209237430078B5DD /* SignUpController.swift in Sources */,
 			);

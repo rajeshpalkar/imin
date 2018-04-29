@@ -12,6 +12,9 @@ import Firebase
 
 class SignUpController: UIViewController {
     
+    var name: String!
+    var email: String!
+    var zip: String!
     
     let signUpLabel: UILabel = {
         let lbl = UILabel()
@@ -90,10 +93,9 @@ class SignUpController: UIViewController {
                 print(error ?? 0)
                 return
             }
-            
-            
+            self.createUserDetailsInDatabase()
         }
-        
+    
         let alert = UIAlertController(
             title: "Account Created",
             message: "Redirecting to Profile Page!",
@@ -105,16 +107,44 @@ class SignUpController: UIViewController {
         
         alert.addAction(action)
         
-        self.present(alert, animated: true, completion: nil)
-        
         let menuController = TabBarMenuController()
         menuController.selectedIndex = 3
         let navController = UINavigationController(rootViewController: menuController)
-         navController.modalTransitionStyle = .flipHorizontal
+        navController.modalTransitionStyle = .flipHorizontal
         self.present(navController, animated: true, completion: nil)
         
     }
     
+    
+    func createUserDetailsInDatabase()
+    {
+            name = self.nameText.text
+            email = self.emailText.text
+            zip = self.zipcodeText.text
+        
+            let values = ["name": self.name, "email": self.email, "zipcode": self.zip]
+                        
+            if(self.email == nil){
+              self.email = Auth.auth().currentUser?.email
+            }
+                        
+            guard let uid =   Auth.auth().currentUser?.uid
+            else{
+             return
+             }
+        
+        let ref = Database.database().reference(fromURL: "https://imin-f4d8c.firebaseio.com/")
+        let userReference = ref.child("users").child(uid)
+        
+        userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+            if error != nil {
+                print(error ?? 0)
+                return
+            }
+        })
+        
+    }
+
     func setUpViews(){
         
         view.backgroundColor = UIColor.white

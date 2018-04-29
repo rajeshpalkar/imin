@@ -24,20 +24,25 @@ class TabBarMenuController: UITabBarController {
         let firstViewController = HomeScreenController()
         firstViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home"), tag: 0)
         firstViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 3, left: 0, bottom: -3, right: 0)
+       
         
         let secondViewController = LookUpScreenController()
         secondViewController.tabBarItem = UITabBarItem(title: "Look Up", image: UIImage(named: "lookup"), tag: 1)
         secondViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 2, left: 0, bottom: -2, right: 0)
+       
         
         let thirdViewController = GoingScreenController()
         thirdViewController.tabBarItem = UITabBarItem(title: "Going", image: UIImage(named: "star"), tag: 2)
         thirdViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 2, left: 0, bottom: -2, right: 0)
+     
         
         let forthViewController = ProfileScreenController()
         forthViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "profile"), tag: 3)
         forthViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 2, left: 0, bottom: -2, right: 0)
+       
         
         let tabBarList = [firstViewController, secondViewController, thirdViewController, forthViewController]
+        
         
         viewControllers = tabBarList
         

@@ -26,5 +26,14 @@ class HomeScreenController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setUpNavigationBar()
+    }
     
+    func setUpNavigationBar()
+    {
+        self.tabBarController?.navigationItem.title = ""
+        self.tabBarController?.navigationItem.rightBarButtonItem =  nil
+    }
 }

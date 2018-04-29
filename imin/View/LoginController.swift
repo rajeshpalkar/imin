@@ -36,7 +36,7 @@ class LoginController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
-
+    
     let passText: UITextField = {
         let tf = UITextField()
         tf.placeholder = "   Password"

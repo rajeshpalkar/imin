@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import GoogleMaps
+import GooglePlaces
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,14 +22,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         
+        GMSServices.provideAPIKey("AIzaSyAxyw2ZbhU64pdzyfkee9dQlmplZecYqr8")
+        GMSPlacesClient.provideAPIKey("AIzaSyAxyw2ZbhU64pdzyfkee9dQlmplZecYqr8")
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.makeKeyAndVisible()
         
-        let homeViewController = TabBarMenuController()
+        let homeViewController = LoginController()
         let navigationController = UINavigationController(rootViewController: homeViewController)
         window?.rootViewController = navigationController
         
-        UITabBar.appearance().tintColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
+        UINavigationBar.appearance().tintColor =  UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
+        navigationController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)]
+        
         
         return true
     }
