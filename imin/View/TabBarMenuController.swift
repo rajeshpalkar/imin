@@ -20,6 +20,7 @@ class TabBarMenuController: UITabBarController {
         view.backgroundColor = UIColor.orange
         
         
+        UITabBar.appearance().tintColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
         
         let firstViewController = HomeScreenController()
         firstViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home"), tag: 0)

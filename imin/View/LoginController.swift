@@ -8,9 +8,11 @@
 
 import UIKit
 import Firebase
+import GoogleSignIn
 
-class LoginController: UIViewController {
-
+class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate {
+    
+      var imgURL: String?
     
     let appNameLabel: UILabel = {
         let lbl = UILabel()
@@ -101,8 +103,70 @@ class LoginController: UIViewController {
             
         }
     }
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if error != nil{
+            print(error ?? 0)
+            return
+        }
+        
+        self.imgURL = user.profile.imageURL(withDimension: 200).absoluteString
+        
+        print(self.imgURL!)
+        
+        guard let idToken = user.authentication.idToken else {return}
+        guard let accessToken = user.authentication.accessToken else {return}
+        
+        let credentials = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+        
+        Auth.auth().signIn(with: credentials) { (user, error) in
+            if let err = error{
+                print("Failed to create Firebase user with Google",err)
+                return
+            }
+            
+            guard let uid = user?.uid else {return}
+            print("Sucessfully logged in with google and firebase",uid)
+            
+            guard let username = user?.displayName else { return}
+            guard let email = user?.email else {return}
+        
+
+            
+            let values = ["name": username, "email": email, "zipcode": "13210", "ProfileImageUrl": self.imgURL!]
+            
+            
+            let ref = Database.database().reference(fromURL: "https://imin-f4d8c.firebaseio.com/")
+            let userReference = ref.child("users").child(uid)
+            
+            userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                if error != nil {
+                    print(error ?? 0)
+                    return
+                }
+            })
+            
+            
+            let menuController = TabBarMenuController()
+            menuController.selectedIndex = 0
+            let navController = UINavigationController(rootViewController: menuController)
+            navController.modalTransitionStyle = .flipHorizontal
+            self.present(navController, animated: true, completion: nil)
+            
+            
+            
+        }
+    }
 
 
+//    let googleButton: GIDSignInButton = {
+//        let button = GIDSignInButton()
+//        button.colorScheme = GIDSignInButtonColorScheme.light
+//      //button.backgroundColor = UIColor(displayP3Red: 51/255, green: 153/255, blue: 255/255, alpha: 1)
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        return button
+//    }()
+    
     let googleButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(displayP3Red: 51/255, green: 153/255, blue: 255/255, alpha: 1)
@@ -110,14 +174,18 @@ class LoginController: UIViewController {
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.translatesAutoresizingMaskIntoConstraints = false
-
-
-        //button.addTarget(self, action: #selector(handleLoginRegister), for: .touchUpInside)
-
-
+        
+        
+        button.addTarget(self, action: #selector(handleGoogleSignIn), for: .touchUpInside)
+        
+        
         return button
     }()
 
+    @objc func handleGoogleSignIn()
+    {
+        GIDSignIn.sharedInstance().signIn()
+    }
 
     let facebookButton: UIButton = {
         let button = UIButton()
@@ -230,11 +298,8 @@ class LoginController: UIViewController {
         signUpButton.clipsToBounds = true
         signUpButton.layer.cornerRadius = 5.0
         
-        
-        
-        
-        
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -250,6 +315,8 @@ class LoginController: UIViewController {
         
         setUpViews();
         
+        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().delegate = self
         
         
     }

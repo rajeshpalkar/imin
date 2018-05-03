@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Firebase
+import GoogleSignIn
 
 class SettingsController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -125,8 +126,8 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     let nameLabelContent: UILabel = {
         let lbl = UILabel()
         lbl.text = "Im'IN"
-        lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
-        lbl.font = UIFont.systemFont(ofSize: 24)
+        lbl.textColor = UIColor.black
+        lbl.font = UIFont.systemFont(ofSize: 20)
         lbl.adjustsFontSizeToFitWidth = true
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -145,6 +146,16 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     let emailLabelContent: UILabel = {
         let lbl = UILabel()
         lbl.text = "Im'IN"
+        lbl.textColor = UIColor.black
+        lbl.font = UIFont.systemFont(ofSize: 20)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    let interestLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "Interest"
         lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
         lbl.font = UIFont.systemFont(ofSize: 24)
         lbl.adjustsFontSizeToFitWidth = true
@@ -152,9 +163,20 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
         return lbl
     }()
     
-    let zipcodeLabel: UILabel = {
+    let interestLabelContent: UILabel = {
         let lbl = UILabel()
-        lbl.text = "Zipcode"
+        lbl.text = "Update your Interest"
+        lbl.textColor = UIColor.black
+        lbl.font = UIFont.systemFont(ofSize: 20)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    
+    let cityLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "City"
         lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
         lbl.font = UIFont.systemFont(ofSize: 24)
         lbl.adjustsFontSizeToFitWidth = true
@@ -162,15 +184,36 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
         return lbl
     }()
     
-    let zipcodeLabelContent: UILabel = {
+    let cityLabelContent: UILabel = {
         let lbl = UILabel()
-        lbl.text = "Im'IN"
+        lbl.text = "Update your City"
+        lbl.textColor = UIColor.black
+        lbl.font = UIFont.systemFont(ofSize: 20)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    let stateLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "State"
         lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
         lbl.font = UIFont.systemFont(ofSize: 24)
         lbl.adjustsFontSizeToFitWidth = true
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
+    
+    let stateLabelContent: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "Update your State"
+        lbl.textColor = UIColor.black
+        lbl.font = UIFont.systemFont(ofSize: 20)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
     
     let notificationsLabel: UILabel = {
         let lbl = UILabel()
@@ -262,7 +305,6 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     @objc func handleAboutUs()
     {
         let aboutController = AboutUsController()
-        //detailedController.id = movie.id
         navigationController?.pushViewController(aboutController, animated: true)
     }
     
@@ -285,8 +327,8 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
         do{
             print("user loggedOut")
             try Auth.auth().signOut()
-            
-            
+            GIDSignIn.sharedInstance().signOut()
+        
             let loginController = LoginController()
             let navController = UINavigationController(rootViewController: loginController)
             navController.modalTransitionStyle = .partialCurl
@@ -316,39 +358,51 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
           profileImage.widthAnchor.constraint(equalToConstant: 100).isActive = true
         
           nameLabel.topAnchor.constraint(equalTo: loggedInLabel.topAnchor, constant: 120).isActive = true
-          nameLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 60).isActive = true
+          nameLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         
           nameLabelContent.topAnchor.constraint(equalTo: nameLabel.topAnchor).isActive = true
           nameLabelContent.leftAnchor.constraint(equalTo: nameLabel.rightAnchor, constant: 60).isActive = true
         
-          emailLabel.topAnchor.constraint(equalTo: nameLabel.topAnchor, constant: 50).isActive = true
+          emailLabel.topAnchor.constraint(equalTo: nameLabel.topAnchor, constant: 40).isActive = true
           emailLabel.leftAnchor.constraint(equalTo: nameLabel.leftAnchor).isActive = true
         
-          emailLabelContent.topAnchor.constraint(equalTo: nameLabelContent.topAnchor, constant: 50).isActive = true
+          emailLabelContent.topAnchor.constraint(equalTo: nameLabelContent.topAnchor, constant: 40).isActive = true
           emailLabelContent.leftAnchor.constraint(equalTo: nameLabelContent.leftAnchor).isActive = true
         
-          zipcodeLabel.topAnchor.constraint(equalTo: emailLabel.topAnchor, constant: 50).isActive = true
-          zipcodeLabel.leftAnchor.constraint(equalTo: emailLabel.leftAnchor).isActive = true
+          interestLabel.topAnchor.constraint(equalTo: emailLabel.topAnchor, constant: 40).isActive = true
+          interestLabel.leftAnchor.constraint(equalTo: emailLabel.leftAnchor).isActive = true
         
-          zipcodeLabelContent.topAnchor.constraint(equalTo: emailLabelContent.topAnchor, constant: 50).isActive = true
-          zipcodeLabelContent.leftAnchor.constraint(equalTo: emailLabelContent.leftAnchor).isActive = true
+          interestLabelContent.topAnchor.constraint(equalTo: emailLabelContent.topAnchor, constant: 40).isActive = true
+          interestLabelContent.leftAnchor.constraint(equalTo: emailLabelContent.leftAnchor).isActive = true
         
-          notificationsLabel.bottomAnchor.constraint(equalTo: generalAlertsLabel.topAnchor, constant: -10).isActive = true
+          cityLabel.topAnchor.constraint(equalTo: interestLabel.topAnchor, constant: 40).isActive = true
+          cityLabel.leftAnchor.constraint(equalTo: emailLabel.leftAnchor).isActive = true
+        
+          cityLabelContent.topAnchor.constraint(equalTo: interestLabelContent.topAnchor, constant: 40).isActive = true
+          cityLabelContent.leftAnchor.constraint(equalTo: emailLabelContent.leftAnchor).isActive = true
+        
+          stateLabel.topAnchor.constraint(equalTo: cityLabel.topAnchor, constant: 40).isActive = true
+          stateLabel.leftAnchor.constraint(equalTo: emailLabel.leftAnchor).isActive = true
+        
+          stateLabelContent.topAnchor.constraint(equalTo: cityLabelContent.topAnchor, constant: 40).isActive = true
+          stateLabelContent.leftAnchor.constraint(equalTo: emailLabelContent.leftAnchor).isActive = true
+        
+          notificationsLabel.bottomAnchor.constraint(equalTo: generalAlertsLabel.topAnchor).isActive = true
           notificationsLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         
-          generalAlertsLabel.bottomAnchor.constraint(equalTo: myAlertsLabel.topAnchor, constant: -15).isActive = true
+          generalAlertsLabel.bottomAnchor.constraint(equalTo: myAlertsLabel.topAnchor, constant: -10).isActive = true
           generalAlertsLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40).isActive = true
         
-          generalCheckButton.bottomAnchor.constraint(equalTo: myAlertCheckButton.topAnchor, constant: -15).isActive = true
+          generalCheckButton.bottomAnchor.constraint(equalTo: myAlertCheckButton.topAnchor, constant: -10).isActive = true
           generalCheckButton.rightAnchor.constraint(equalTo: myAlertCheckButton.rightAnchor).isActive = true
         
-          myAlertsLabel.bottomAnchor.constraint(equalTo: aboutUsButton.topAnchor, constant: -35).isActive = true
+          myAlertsLabel.bottomAnchor.constraint(equalTo: aboutUsButton.topAnchor, constant: -25).isActive = true
           myAlertsLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 40).isActive = true
         
-          myAlertCheckButton.bottomAnchor.constraint(equalTo: aboutUsButton.topAnchor, constant: -30).isActive = true
+          myAlertCheckButton.bottomAnchor.constraint(equalTo: aboutUsButton.topAnchor, constant: -20).isActive = true
           myAlertCheckButton.leftAnchor.constraint(equalTo: myAlertsLabel.rightAnchor, constant: 60).isActive = true
         
-          logoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -45).isActive = true
+          logoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -35).isActive = true
           logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
           logoutButton.widthAnchor.constraint(equalToConstant: 320).isActive = true
           logoutButton.heightAnchor.constraint(equalToConstant: 43).isActive = true
@@ -368,12 +422,14 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     func getUserDetails()
     {
         let uid = Auth.auth().currentUser?.uid
-        
+
         Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject]{
                 self.nameLabelContent.text = dictionary["name"] as? String
                 self.emailLabelContent.text = dictionary["email"] as? String
-                self.zipcodeLabelContent.text = dictionary["zipcode"] as? String
+                self.cityLabelContent.text = dictionary["city"] as? String
+                self.stateLabelContent.text = dictionary["state"] as? String
+                self.interestLabelContent.text = dictionary["interest"] as? String
                 self.imgURL = dictionary["ProfileImageUrl"] as? String
                 if let profileImageURL = self.imgURL
                 {
@@ -423,8 +479,12 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
         view.addSubview(nameLabelContent)
         view.addSubview(emailLabel)
         view.addSubview(emailLabelContent)
-        view.addSubview(zipcodeLabel)
-        view.addSubview(zipcodeLabelContent)
+        view.addSubview(interestLabel)
+        view.addSubview(interestLabelContent)
+        view.addSubview(cityLabel)
+        view.addSubview(cityLabelContent)
+        view.addSubview(stateLabel)
+        view.addSubview(stateLabelContent)
         view.addSubview(notificationsLabel)
         view.addSubview(generalAlertsLabel)
         view.addSubview(myAlertsLabel)
