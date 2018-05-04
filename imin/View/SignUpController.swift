@@ -204,6 +204,7 @@ class SignUpController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
+        self.hideKeyboardWhenTappedAround()
         
         setUpNavigationBar()
         

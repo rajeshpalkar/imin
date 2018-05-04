@@ -13,7 +13,7 @@ import Firebase
 class ProfileScreenController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var availableTime: String?
-    let interstArray = ["Swimming", "Painting", "SkyDiving", "YouTube Collab"]
+    let interstArray = ["Trekking", "Amusement Park", "YouTube Collab","Bowling"]
     let cityArray = ["Syracuse", "Albany", "Buffalo","Albany", "Atlanta", "San Jose"]
     let stateArray = ["New York", "California", "Georgia"]
 
@@ -143,7 +143,7 @@ class ProfileScreenController: UIViewController, UIPickerViewDelegate, UIPickerV
     
     let radiusSlider: UISlider = {
         let rs = UISlider()
-        rs.minimumValue = 0
+        rs.minimumValue = 10
         rs.maximumValue = 100
         rs.translatesAutoresizingMaskIntoConstraints = false
         rs.tintColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
@@ -190,7 +190,8 @@ class ProfileScreenController: UIViewController, UIPickerViewDelegate, UIPickerV
         let selectedCity =  cityArray[cityPicker.selectedRow(inComponent: 0)]
         let selectedState =  stateArray[statePicker.selectedRow(inComponent: 0)]
         
-        
+        radiusCountLabel.text = String(lroundf(radiusSlider.value * 10000))
+        print(radiusCountLabel.text)
         let values = ["time": self.availableTime, "interest": selectedInterest, "city": selectedCity, "state": selectedState, "radius": radiusCountLabel.text!]
     
         
@@ -285,7 +286,7 @@ class ProfileScreenController: UIViewController, UIPickerViewDelegate, UIPickerV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         view.backgroundColor = UIColor.white
         
         view.addSubview(interestLabel)

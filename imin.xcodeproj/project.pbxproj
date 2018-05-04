@@ -13,6 +13,11 @@
 		1905583B209093A00071097A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1905583A209093A00071097A /* Assets.xcassets */; };
 		1905583E209093A00071097A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1905583C209093A00071097A /* LaunchScreen.storyboard */; };
 		193BACEE2099A5FA0001960A /* MyLookUpsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACED2099A5FA0001960A /* MyLookUpsData.swift */; };
+		193BACF0209B049C0001960A /* GoogleDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACEF209B049C0001960A /* GoogleDataProvider.swift */; };
+		193BACF2209B05B60001960A /* GooglePlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACF1209B05B60001960A /* GooglePlace.swift */; };
+		193BACF4209BA8330001960A /* EventDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACF3209BA8330001960A /* EventDetailsController.swift */; };
+		193BACF6209BA8760001960A /* LookUpDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACF5209BA8760001960A /* LookUpDetailsController.swift */; };
+		193BACF8209C786F0001960A /* MyEventDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193BACF7209C786F0001960A /* MyEventDetailsController.swift */; };
 		19E32C4A209237430078B5DD /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C49209237430078B5DD /* SignUpController.swift */; };
 		19E32C4C209255B60078B5DD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 19E32C4B209255B60078B5DD /* GoogleService-Info.plist */; };
 		19E32C51209258810078B5DD /* TabBarMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E32C50209258810078B5DD /* TabBarMenuController.swift */; };
@@ -35,6 +40,11 @@
 		1905583D209093A00071097A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1905583F209093A00071097A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		193BACED2099A5FA0001960A /* MyLookUpsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLookUpsData.swift; sourceTree = "<group>"; };
+		193BACEF209B049C0001960A /* GoogleDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDataProvider.swift; sourceTree = "<group>"; };
+		193BACF1209B05B60001960A /* GooglePlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlace.swift; sourceTree = "<group>"; };
+		193BACF3209BA8330001960A /* EventDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsController.swift; sourceTree = "<group>"; };
+		193BACF5209BA8760001960A /* LookUpDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookUpDetailsController.swift; sourceTree = "<group>"; };
+		193BACF7209C786F0001960A /* MyEventDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyEventDetailsController.swift; sourceTree = "<group>"; };
 		19E32C49209237430078B5DD /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
 		19E32C4B209255B60078B5DD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		19E32C50209258810078B5DD /* TabBarMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarMenuController.swift; sourceTree = "<group>"; };
@@ -100,6 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				193BACED2099A5FA0001960A /* MyLookUpsData.swift */,
+				193BACEF209B049C0001960A /* GoogleDataProvider.swift */,
+				193BACF1209B05B60001960A /* GooglePlace.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -111,11 +123,14 @@
 				19E32C49209237430078B5DD /* SignUpController.swift */,
 				19E32C50209258810078B5DD /* TabBarMenuController.swift */,
 				19E32C522092908F0078B5DD /* HomeScreenController.swift */,
+				193BACF3209BA8330001960A /* EventDetailsController.swift */,
 				19E32C54209290A20078B5DD /* LookUpScreenController.swift */,
+				193BACF5209BA8760001960A /* LookUpDetailsController.swift */,
 				19E32C56209290B80078B5DD /* GoingScreenController.swift */,
 				19E32C58209290C70078B5DD /* ProfileScreenController.swift */,
 				19E32C5A209329880078B5DD /* SettingsController.swift */,
 				19E32C5C20951B6C0078B5DD /* AboutUsController.swift */,
+				193BACF7209C786F0001960A /* MyEventDetailsController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -246,6 +261,7 @@
 				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -254,6 +270,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -270,12 +287,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-imin/Pods-imin-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlacePicker/Frameworks/GooglePlacePicker.framework/Resources/GooglePlacePicker.bundle",
 				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlacePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 			);
@@ -292,12 +311,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				19E32C5B209329880078B5DD /* SettingsController.swift in Sources */,
+				193BACF0209B049C0001960A /* GoogleDataProvider.swift in Sources */,
 				19055836209093A00071097A /* LoginController.swift in Sources */,
 				19E32C532092908F0078B5DD /* HomeScreenController.swift in Sources */,
 				19E32C57209290B80078B5DD /* GoingScreenController.swift in Sources */,
+				193BACF4209BA8330001960A /* EventDetailsController.swift in Sources */,
 				19055834209093A00071097A /* AppDelegate.swift in Sources */,
 				193BACEE2099A5FA0001960A /* MyLookUpsData.swift in Sources */,
+				193BACF6209BA8760001960A /* LookUpDetailsController.swift in Sources */,
 				19E32C55209290A20078B5DD /* LookUpScreenController.swift in Sources */,
+				193BACF2209B05B60001960A /* GooglePlace.swift in Sources */,
+				193BACF8209C786F0001960A /* MyEventDetailsController.swift in Sources */,
 				19E32C59209290C70078B5DD /* ProfileScreenController.swift in Sources */,
 				19E32C5D20951B6C0078B5DD /* AboutUsController.swift in Sources */,
 				19E32C51209258810078B5DD /* TabBarMenuController.swift in Sources */,

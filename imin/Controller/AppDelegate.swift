@@ -31,8 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
-        GMSServices.provideAPIKey("AIzaSyAxyw2ZbhU64pdzyfkee9dQlmplZecYqr8")
-        GMSPlacesClient.provideAPIKey("AIzaSyAxyw2ZbhU64pdzyfkee9dQlmplZecYqr8")
+        GMSServices.provideAPIKey("AIzaSyBCtGqCSz_kypE2fgfi-oxqJCu_UPI4wUg")
+        GMSPlacesClient.provideAPIKey("AIzaSyBCtGqCSz_kypE2fgfi-oxqJCu_UPI4wUg")
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.makeKeyAndVisible()

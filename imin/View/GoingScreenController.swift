@@ -14,6 +14,7 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
     
     let bandCellId = "cell"
     var lookups = [Lookup]()
+    var favEvents = [FavEvent]()
     
     let segmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items:["Matched Events","My Look Ups"])
@@ -37,7 +38,7 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if segmentedControl.selectedSegmentIndex == 0 {
-            return 80
+            return favEvents.count
         }else {
         return lookups.count
         }
@@ -48,13 +49,12 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
         //let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as!  BandCell
         
         let cell = BandCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell\(indexPath.row)")
-        
-        //print(indexPath.row)
-        
+    
         
         if segmentedControl.selectedSegmentIndex == 0 {
-            cell.eventTitle.text = "Optimus prime"
-            cell.dateLabel.text = "test"
+           let favEvent = favEvents[indexPath.row]
+            cell.eventTitle.text = favEvent.placeName
+            cell.dateLabel.text = favEvent.interest
         }else {
             let lookup = lookups[indexPath.row]
             cell.eventTitle.text = lookup.title
@@ -80,11 +80,35 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
         //getting the current cell from the index path
         //  let currentCell = tableView.cellForRow(at: indexPath!)! as UITableViewCell
         
-        let lookup = lookups[(tableView.indexPathForSelectedRow?.row)!]
-        
-        //self.showDetailedMovie(movie:movie)
-        
-        
+        if segmentedControl.selectedSegmentIndex == 0 {
+             let favEvent = favEvents[(tableView.indexPathForSelectedRow?.row)!]
+            self.showDetailedEvent(favEvent:favEvent)
+        }else {
+            let lookup = lookups[(tableView.indexPathForSelectedRow?.row)!]
+            
+            self.showDetailedLookup(lookup:lookup)
+        }
+      
+    }
+    
+    func showDetailedLookup(lookup: Lookup)
+    {
+        let detailedController = LookUpDetailsController()
+        detailedController.id = lookup.id
+        navigationController?.pushViewController(detailedController, animated: true)
+    }
+    
+    func showDetailedEvent(favEvent: FavEvent)
+    {
+        let detailedController = MyEventDetailsController()
+         detailedController.id = favEvent.id
+         detailedController.interest = favEvent.interest
+         detailedController.latitude = favEvent.latitude
+         detailedController.longitude = favEvent.longitude
+         detailedController.place = favEvent.placeName
+         detailedController.location = favEvent.location
+       
+        navigationController?.pushViewController(detailedController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -106,6 +130,7 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
     @objc func handleToggleChange(){
         if segmentedControl.selectedSegmentIndex == 0 {
             tableView.setContentOffset(CGPoint.zero, animated: true)
+            fetchFavEvents()
             tableView.reloadData()
         }else {
             tableView.setContentOffset(CGPoint.zero, animated: true)
@@ -127,6 +152,41 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
         tableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
     }
     
+    func fetchFavEvents()
+    {
+        guard let uid =   Auth.auth().currentUser?.uid
+            else{
+                return
+        }
+        print(uid)
+        favEvents.removeAll()
+        Database.database().reference().child("favorites").child(uid).observe(.childAdded, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let myEvent = FavEvent()
+                
+                myEvent.id = dictionary["id"] as! String
+                myEvent.interest = dictionary["interest"] as! String
+                myEvent.latitude = dictionary["latitude"] as! String
+                myEvent.longitude = dictionary["longitude"] as! String
+                myEvent.location = dictionary["location"] as! String
+                myEvent.placeName = dictionary["place"] as! String
+                
+                
+                
+                self.favEvents.append(myEvent)
+                print(myEvent.interest)
+                
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            
+            print(snapshot)
+        }, withCancel: nil)
+    }
+    
     func fetchLookups(){
         guard let uid =   Auth.auth().currentUser?.uid
             else{
@@ -141,6 +201,7 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
                 
                 myLookup.title = dictionary["interest"] as! String
                 myLookup.date = dictionary["date"] as! String
+                myLookup.id = dictionary["id"] as! String
                 
             
                 
@@ -160,12 +221,13 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchLookups()
+        fetchFavEvents()
         tableView.reloadData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         view.addSubview(segmentedControl)
         view.addSubview(tableView)
         

@@ -9,11 +9,26 @@
 import Foundation
 import UIKit
 import Firebase
+import GooglePlaces
+import GoogleMaps
 
-class HomeScreenController: UIViewController, UITableViewDataSource, UITableViewDelegate{
+
+class HomeScreenController: UIViewController, UITableViewDataSource, UITableViewDelegate, CLLocationManagerDelegate{
     
     let bandCellId = "cell"
     var imgURL: String?
+    var places = [String]()
+    var locations = [PlaceDetails]()
+    var interestType: String?
+    var searchedTypes = [String]()
+    var searchRadius: String?
+    //campground park cafe amusement_park bowling_alley gym  swimming(keyword) art(keyword) recreation(keyword)
+    var placesClient: GMSPlacesClient!
+    var likeHoodList: GMSPlaceLikelihoodList?
+    
+    private let locationManager = CLLocationManager()
+    private let dataProvider = GoogleDataProvider()
+    
     
     let welcomeLabel: UILabel = {
         let lbl = UILabel()
@@ -71,7 +86,7 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return 80
+        return locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -80,16 +95,16 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         
         let cell = BandCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell\(indexPath.row)")
         
-        //print(indexPath.row)
+        let uid = Auth.auth().currentUser?.uid
         
+        Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject]{
+                cell.dateLabel.text = dictionary["interest"] as? String
+            }
+        }, withCancel: nil)
         
-
-            cell.eventTitle.text = "Optimus prime"
-            cell.dateLabel.text = "test"
-
-        
+        cell.eventTitle.text = locations[indexPath.row].name
         cell.eventPicture.image = UIImage(named: "test")
-        
         
         return cell
     }
@@ -107,11 +122,21 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         //getting the current cell from the index path
         //  let currentCell = tableView.cellForRow(at: indexPath!)! as UITableViewCell
         
-        //***let lookup = lookups[(tableView.indexPathForSelectedRow?.row)!]
+        let location  = locations[(tableView.indexPathForSelectedRow?.row)!]
         
-        //self.showDetailedMovie(movie:movie)
+        self.showDetailedMovie(location:location)
         
         
+    }
+    
+    func showDetailedMovie(location: PlaceDetails)
+    {
+        let detailedController = EventDetailsController()
+        detailedController.id = location.id
+        detailedController.name = location.name
+        detailedController.address = location.address
+        detailedController.coordinates = location.coordinates
+        navigationController?.pushViewController(detailedController, animated: true)
     }
     
     func setUpViews()
@@ -138,11 +163,29 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
     func getUserDetails()
     {
         
-            let uid = Auth.auth().currentUser?.uid
+        if let uid = Auth.auth().currentUser?.uid {
             
-            Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject]{
                     self.usernameLabel.text = dictionary["name"] as? String
+                    self.interestType = dictionary["interest"] as? String
+                    self.searchRadius = dictionary["radius"] as? String
+                    
+                    //"Trekking", "Amusement Park", "YouTube Collab","Bowling"
+                    //campground park cafe amusement_park bowling_alley gym
+                    if self.interestType == "Trekking" {
+                        self.searchedTypes.append("campground")
+                    }else if self.interestType == "Amusement Park" {
+                        self.searchedTypes.append("amusement_park")
+                    }else if self.interestType == "Bowling" {
+                        self.searchedTypes.append("bowling_alley")
+                    } else {
+                        self.searchedTypes.append("gym")
+                    }
+                    
+                    print(self.searchedTypes)
+                    print(self.searchRadius)
+                    
                     self.imgURL = dictionary["ProfileImageUrl"] as? String
                     if let profileImageURL = self.imgURL
                     {
@@ -158,16 +201,27 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
                             }
                             
                         }).resume()
-                        
                     }
                 }
+                self.getLocation()
+                self.locationManager.startUpdatingLocation()
             }, withCancel: nil)
+        }
+        
+        
+    }
+    
+    
+    func getLocation()
+    {
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
         
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         view.backgroundColor = UIColor.white
         
         getUserDetails()
@@ -199,6 +253,8 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setUpNavigationBar()
+        getUserDetails()
+        self.locationManager.startUpdatingLocation()
     }
     
     func setUpNavigationBar()
@@ -207,4 +263,81 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         self.tabBarController?.navigationItem.rightBarButtonItem =  nil
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)]
     }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+  
+        locationManager.startUpdatingLocation()
+    }
+    
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
+        //print(location.coordinate.latitude)
+        //print(location.coordinate.longitude)
+        
+        print(location)
+        print(location.coordinate)
+        reverseGeocodeCoordinate(location.coordinate)
+        self.fetchNearbyPlaces(coordinate: location.coordinate)
+        
+        locationManager.stopUpdatingLocation()
+    }
+    
+    private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
+    
+        let geocoder = GMSGeocoder()
+
+        geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
+            guard let address = response?.firstResult(), let lines = address.lines else {
+                return
+            }
+     
+            //self.usernameLabel.text = lines.joined(separator: "\n")  // convert co-ordinates to name
+     
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    private func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
+        locations.removeAll()
+        
+        if self.searchRadius == nil {
+            self.searchRadius = "50000"
+        }
+        if self.searchedTypes.isEmpty {
+            self.searchedTypes.append("")
+        }
+        print(self.searchedTypes)
+        print(self.searchRadius)
+        dataProvider.fetchPlacesNearCoordinate(coordinate, radius:self.searchRadius!, types: searchedTypes) { places in
+            for place: GooglePlace in places {
+    
+                let location = PlaceDetails()
+                location.name  = place.name
+                location.address = place.address
+                location.id = place.id
+                location.coordinates = place.coordinate
+                
+                print(location.name!)
+                print(location.address!)
+                print(location.id!)
+                print(self.locations.count)
+
+                self.locations.append(location)
+                self.tableView.reloadData()
+                
+            }
+        }
+        
+     }
+
 }

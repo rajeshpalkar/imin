@@ -324,19 +324,39 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     }()
     
     @objc func handleLogout(){
-        do{
-            print("user loggedOut")
-            try Auth.auth().signOut()
-            GIDSignIn.sharedInstance().signOut()
         
-            let loginController = LoginController()
-            let navController = UINavigationController(rootViewController: loginController)
-            navController.modalTransitionStyle = .partialCurl
-            self.present(navController, animated: true, completion: nil)
-        }
-        catch let logoutError{
-            print(logoutError)
-        }
+        let alert = UIAlertController(
+            title: "Do you want to Logout?",
+            message: "",
+            preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
+          
+            do{
+                print("user loggedOut")
+                try Auth.auth().signOut()
+                GIDSignIn.sharedInstance().signOut()
+
+            }
+            catch let logoutError{
+                print(logoutError)
+            }
+        
+
+            let navController = LoginController()
+            navController.modalTransitionStyle = .flipHorizontal
+            self.present(navController,animated: true,completion: nil)
+
+
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+           
+        }))
+        
+        present(alert, animated: true, completion: nil)
+
+        
     }
     
     func setUpNavigationBar()
@@ -454,7 +474,7 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         getUserDetails()
     
         if UserDefaults.standard.bool(forKey: "generalCheck"){

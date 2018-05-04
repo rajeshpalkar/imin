@@ -14,5 +14,7 @@ pod 'Firebase/Storage'
 pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'GoogleSignIn'
+pod 'GooglePlacePicker'
+pod 'SwiftyJSON'
 
 end

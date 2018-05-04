@@ -163,7 +163,7 @@ class AboutUsController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        self.hideKeyboardWhenTappedAround() 
         view.backgroundColor = UIColor.white
         
         setUpNavigationBar()

@@ -16,7 +16,7 @@ class TabBarMenuController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         view.backgroundColor = UIColor.orange
         
         

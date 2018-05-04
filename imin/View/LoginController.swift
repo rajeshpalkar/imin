@@ -13,6 +13,10 @@ import GoogleSignIn
 class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate {
     
       var imgURL: String?
+      var strLabel = UILabel()
+      var activityIndicator = UIActivityIndicatorView()
+      let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    
     
     let appNameLabel: UILabel = {
         let lbl = UILabel()
@@ -94,7 +98,8 @@ class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate 
             }
             
             print("Sucessfully LoggedIn!")
-
+           // self.activityIndicatoor()
+            
             let menuController = TabBarMenuController()
             menuController.selectedIndex = 0
             let navController = UINavigationController(rootViewController: menuController)
@@ -102,6 +107,30 @@ class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate 
             self.present(navController, animated: true, completion: nil)
             
         }
+    }
+    
+    func activityIndicatoor() {
+        
+        strLabel.removeFromSuperview()
+        activityIndicator.removeFromSuperview()
+        effectView.removeFromSuperview()
+        
+        strLabel = UILabel(frame: CGRect(x: 50, y: 0, width: 160, height: 46))
+        strLabel.text = "Logging 'IN.."
+        strLabel.font = UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.medium)
+        strLabel.textColor = UIColor(white: 0.9, alpha: 0.7)
+        
+        effectView.frame = CGRect(x: view.frame.midX - strLabel.frame.width/2, y: view.frame.midY - strLabel.frame.height/2 , width: 160, height: 46)
+        effectView.layer.cornerRadius = 15
+        effectView.layer.masksToBounds = true
+        
+        activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+        activityIndicator.startAnimating()
+        
+        effectView.contentView.addSubview(activityIndicator)
+        effectView.contentView.addSubview(strLabel)
+        view.addSubview(effectView)
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
@@ -158,14 +187,6 @@ class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate 
         }
     }
 
-
-//    let googleButton: GIDSignInButton = {
-//        let button = GIDSignInButton()
-//        button.colorScheme = GIDSignInButtonColorScheme.light
-//      //button.backgroundColor = UIColor(displayP3Red: 51/255, green: 153/255, blue: 255/255, alpha: 1)
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        return button
-//    }()
     
     let googleButton: UIButton = {
         let button = UIButton()
@@ -303,7 +324,8 @@ class LoginController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        self.hideKeyboardWhenTappedAround() 
+        
         view.addSubview(appNameLabel)
         view.addSubview(emailText)
         view.addSubview(passText)

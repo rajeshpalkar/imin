@@ -14,7 +14,8 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     var availableTime: String?
     var availableDate: String?
-    let interstArray = ["Swimming", "Painting", "SkyDiving", "YouTube Collab"]
+    var radiusCount: String?
+    let interstArray = ["Swimming","Weekend Hashtag Project", "SkyDiving", "YouTube Collab", "Trekking", "Amusement Park","Bowling"]
     let locationArray = ["Syracuse", "Albany", "Buffalo","Albany", "Atlanta", "San Jose"]
     
     let interestLabel: UILabel = {
@@ -219,9 +220,6 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
         let selectedLocation =  locationArray[locationPicker.selectedRow(inComponent: 0)]
 
 
-        let values = ["interest": selectedInterest,"date": self.availableDate,"time": self.availableTime, "location": selectedLocation, "radius": radiusCountLabel.text!, "desc": self.descText.text!]
-
-
         guard let uid =   Auth.auth().currentUser?.uid
             else{
                 return
@@ -229,7 +227,15 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
 
         let ref = Database.database().reference(fromURL: "https://imin-f4d8c.firebaseio.com/")
         let userReference = ref.child("lookups").child(uid).childByAutoId()
-
+        
+        let id = userReference.key
+        
+        
+        self.radiusCount = String(lroundf(radiusSlider.value * 10000))
+        
+        let values = ["id":userReference.key ,"interest": selectedInterest,"date": self.availableDate,"time": self.availableTime, "location": selectedLocation, "radius": self.radiusCount, "desc": self.descText.text!]
+        
+        
         userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error ?? 0)
@@ -239,18 +245,25 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
 
         
         let alert = UIAlertController(
-            title: "Details Updated",
-            message: "Redirecting to Settings Page!",
+            title: "Lookup Saved!",
+            message: "Redirecting to Lookup Page!",
             preferredStyle: UIAlertControllerStyle.alert)
 
         let action = UIAlertAction(title: "Okay", style: .default) { (action) in
             // do something when user press OK button, like deleting text in both fields or do nothing
+            let settingsController = GoingScreenController()
+            settingsController.segmentedControl.selectedSegmentIndex = 1
+            self.navigationController?.pushViewController(settingsController, animated: true)
+            
         }
 
         alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
 
-        let settingsController = GoingScreenController()
-        navigationController?.pushViewController(settingsController, animated: true)
+        
+        
+        
         
     }
     
@@ -325,7 +338,7 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.hideKeyboardWhenTappedAround() 
         view.backgroundColor = UIColor.white
         
         view.addSubview(interestLabel)
@@ -375,14 +388,7 @@ class LookUpScreenController: UIViewController, UIPickerViewDelegate, UIPickerVi
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
-    }
-    
-    @objc func handleSettings(){
-        let settingsController = SettingsController()
-        //detailedController.id = movie.id
-        navigationController?.pushViewController(settingsController, animated: true)
-    }
-    
+    }    
     
     func setUpNavigationBar()
     {
