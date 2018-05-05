@@ -107,22 +107,47 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
          detailedController.longitude = favEvent.longitude
          detailedController.place = favEvent.placeName
          detailedController.location = favEvent.location
+         detailedController.reference = favEvent.photoReference
        
         navigationController?.pushViewController(detailedController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        if editingStyle == .delete {
+        guard let uid =   Auth.auth().currentUser?.uid
+            else{
+                return
+        }
+        
+        let ref = Database.database().reference(fromURL: "https://imin-f4d8c.firebaseio.com/")
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            
+            let favEvent = favEvents[indexPath.row]
+            
+            // remove the item from the data model
+            favEvents.remove(at: indexPath.row)
+            let userReference = ref.child("favorites").child(uid).child(favEvent.id)
+            userReference.removeValue { (error, _) in
+                print(error ?? 0)
+            }
+            
+            // delete the table view row
+            tableView.deleteRows(at: [indexPath], with: .left)
+            
+        }else {
+            let lookup = lookups[indexPath.row]
             
             // remove the item from the data model
             lookups.remove(at: indexPath.row)
+            let userReference = ref.child("lookups").child(uid).child(lookup.id)
+            userReference.removeValue { (error, _) in
+                print(error ?? 0)
+            }
             
             // delete the table view row
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.deleteRows(at: [indexPath], with: .left)
             
-        } else if editingStyle == .insert {
-            // Not used in our example, but if you were adding a new row, this is where you would do it.
         }
     }
     
@@ -171,6 +196,7 @@ class GoingScreenController: UIViewController, UITableViewDataSource, UITableVie
                 myEvent.longitude = dictionary["longitude"] as! String
                 myEvent.location = dictionary["location"] as! String
                 myEvent.placeName = dictionary["place"] as! String
+                myEvent.photoReference = dictionary["reference"] as! String
                 
                 
                 

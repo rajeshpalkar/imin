@@ -22,6 +22,8 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
     var interestType: String?
     var searchedTypes = [String]()
     var searchRadius: String?
+    var img = [String]()
+    var reference: String?
     //campground park cafe amusement_park bowling_alley gym  swimming(keyword) art(keyword) recreation(keyword)
     var placesClient: GMSPlacesClient!
     var likeHoodList: GMSPlaceLikelihoodList?
@@ -136,6 +138,7 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         detailedController.name = location.name
         detailedController.address = location.address
         detailedController.coordinates = location.coordinates
+        detailedController.photoReference = location.photoReference
         navigationController?.pushViewController(detailedController, animated: true)
     }
     
@@ -183,8 +186,6 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
                         self.searchedTypes.append("gym")
                     }
                     
-                    print(self.searchedTypes)
-                    print(self.searchRadius)
                     
                     self.imgURL = dictionary["ProfileImageUrl"] as? String
                     if let profileImageURL = self.imgURL
@@ -281,9 +282,7 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         }
         //print(location.coordinate.latitude)
         //print(location.coordinate.longitude)
-        
-        print(location)
-        print(location.coordinate)
+    
         reverseGeocodeCoordinate(location.coordinate)
         self.fetchNearbyPlaces(coordinate: location.coordinate)
         
@@ -307,18 +306,20 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    
     private func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
-        locations.removeAll()
         
+
         if self.searchRadius == nil {
             self.searchRadius = "50000"
         }
         if self.searchedTypes.isEmpty {
             self.searchedTypes.append("")
         }
-        print(self.searchedTypes)
-        print(self.searchRadius)
+       
         dataProvider.fetchPlacesNearCoordinate(coordinate, radius:self.searchRadius!, types: searchedTypes) { places in
+            self.locations.removeAll()
             for place: GooglePlace in places {
     
                 let location = PlaceDetails()
@@ -326,14 +327,13 @@ class HomeScreenController: UIViewController, UITableViewDataSource, UITableView
                 location.address = place.address
                 location.id = place.id
                 location.coordinates = place.coordinate
-                
-                print(location.name!)
-                print(location.address!)
-                print(location.id!)
-                print(self.locations.count)
-
+                location.photoReference = place.photoReference
+              
                 self.locations.append(location)
-                self.tableView.reloadData()
+                DispatchQueue.main.async {
+                     self.tableView.reloadData()
+                }
+               
                 
             }
         }

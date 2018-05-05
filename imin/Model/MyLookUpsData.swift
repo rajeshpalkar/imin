@@ -24,6 +24,7 @@ class PlaceDetails: NSObject
     var name: String!
     var address: String!
     var coordinates: CLLocationCoordinate2D!
+    var photoReference: String!
 }
 
 class FavEvent: NSObject
@@ -34,6 +35,7 @@ class FavEvent: NSObject
     var longitude: String!
     var location: String!
     var placeName: String!
+    var photoReference: String!
 }
 
 
@@ -47,4 +49,20 @@ extension UIViewController {
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
+}
+
+
+
+class BandCellReview : UITableViewCell
+{
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier:  reuseIdentifier)
+        
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }

@@ -19,6 +19,12 @@ class EventDetailsController: UIViewController {
     var address: String!
     var coordinates: CLLocationCoordinate2D!
     var interest: String!
+    var photoReference: String!
+    
+    private let dataProvider = GoogleDataProvider()
+    
+    let cellReuseIdentifier = "cell"
+  
     
     let eventLabel: UILabel = {
         let lbl = UILabel()
@@ -104,24 +110,6 @@ class EventDetailsController: UIViewController {
     }()
     
     
-    let descLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "Desc"
-        lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
-        lbl.font = UIFont.systemFont(ofSize: 24)
-        lbl.adjustsFontSizeToFitWidth = true
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
-    }()
-    
-    let descText: UITextField = {
-        let tf = UITextField()
-        tf.placeholder = "   Description"
-        tf.backgroundColor = UIColor(displayP3Red: 157/255, green: 214/255, blue: 239/255, alpha: 1)
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
-    }()
-    
     var mapViewContainer: GMSMapView = {
         let view = GMSMapView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -157,8 +145,9 @@ class EventDetailsController: UIViewController {
             print(self.name)
             print(self.address)
             print(self.coordinates)
+            print(self.photoReference)
             
-        let values = ["id":self.id, "interest": self.interest, "place": self.name, "location": self.address, "latitude": String(self.coordinates.latitude),"longitude": String(self.coordinates.longitude)] as [String : Any]
+        let values = ["id":self.id, "reference":self.photoReference,"interest": self.interest, "place": self.name, "location": self.address, "latitude": String(self.coordinates.latitude),"longitude": String(self.coordinates.longitude)] as [String : Any]
                 
             let ref = Database.database().reference(fromURL: "https://imin-f4d8c.firebaseio.com/")
             let userReference = ref.child("favorites").child(uid).child(id!)
@@ -186,6 +175,27 @@ class EventDetailsController: UIViewController {
         
     }
     
+    let eventImageLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "Image(s)"
+        lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
+        lbl.font = UIFont.systemFont(ofSize: 24)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    lazy var eventImage: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 20.0
+        iv.layer.borderColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1).cgColor
+        iv.layer.borderWidth = 1.0
+        iv.layer.masksToBounds = false
+        iv.clipsToBounds = true
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
     
     func setUpViews()
     {
@@ -212,24 +222,22 @@ class EventDetailsController: UIViewController {
         locationLabelContent.topAnchor.constraint(equalTo: locationLabel.topAnchor, constant: -15).isActive = true
         locationLabelContent.leftAnchor.constraint(equalTo: eventLabelContent.leftAnchor).isActive = true
         locationLabelContent.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -15).isActive = true
-        locationLabelContent.bottomAnchor.constraint(equalTo: descText.topAnchor).isActive = true
+        locationLabelContent.bottomAnchor.constraint(equalTo: mapViewContainer.topAnchor).isActive = true
         locationLabelContent.numberOfLines = 0
         locationLabelContent.lineBreakMode = .byWordWrapping
         
-        descLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 50).isActive = true
-        descLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         
-        descText.topAnchor.constraint(equalTo: descLabel.topAnchor).isActive = true
-        descText.leftAnchor.constraint(equalTo: eventLabelContent.leftAnchor).isActive = true
-        descText.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        descText.heightAnchor.constraint(equalToConstant: 43).isActive = true
-        descText.clipsToBounds = true
-        descText.layer.cornerRadius = 5.0
-        
-        mapViewContainer.topAnchor.constraint(equalTo: descLabel.bottomAnchor, constant: 20).isActive = true
+        mapViewContainer.topAnchor.constraint(equalTo: locationLabelContent.bottomAnchor, constant: 20).isActive = true
         mapViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         mapViewContainer.widthAnchor.constraint(equalToConstant: 320).isActive = true
         mapViewContainer.heightAnchor.constraint(equalToConstant: 220).isActive = true
+    
+        eventImageLabel.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 10).isActive = true
+        eventImageLabel.leftAnchor.constraint(equalTo: mapViewContainer.leftAnchor).isActive = true
+        
+        eventImage.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 10).isActive = true
+        eventImage.rightAnchor.constraint(equalTo: mapViewContainer.rightAnchor).isActive = true
+        eventImage.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
         iminButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -35).isActive = true
         iminButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -251,7 +259,12 @@ class EventDetailsController: UIViewController {
         
         self.placeLabelContent.text = self.name
         self.locationLabelContent.text = self.address
+        
+        dataProvider.fetchPhotoFromReference(self.photoReference!) { (img) in
+            self.eventImage.image = img
+        }
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -265,10 +278,11 @@ class EventDetailsController: UIViewController {
         view.addSubview(eventLabelContent)
         view.addSubview(placeLabelContent)
         view.addSubview(locationLabelContent)
-        view.addSubview(descLabel)
-        view.addSubview(descText)
         view.addSubview(mapViewContainer)
         view.addSubview(iminButton)
+        view.addSubview(eventImageLabel)
+        view.addSubview(eventImage)
+       
         
         getDetails()
         setUpViews()

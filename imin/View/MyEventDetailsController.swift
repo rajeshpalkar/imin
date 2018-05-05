@@ -20,6 +20,8 @@ class MyEventDetailsController: UIViewController {
     var latitude: String!
     var longitude: String!
     var interest: String!
+    var reference: String!
+    private let dataProvider = GoogleDataProvider()
     
     let eventLabel: UILabel = {
         let lbl = UILabel()
@@ -111,6 +113,29 @@ class MyEventDetailsController: UIViewController {
         view.layer.masksToBounds = true
         return view
     }()
+    
+    
+    let eventImageLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "Image(s)"
+        lbl.textColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1)
+        lbl.font = UIFont.systemFont(ofSize: 24)
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
+    lazy var eventImage: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 20.0
+        iv.layer.borderColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1).cgColor
+        iv.layer.borderWidth = 1.0
+        iv.layer.masksToBounds = false
+        iv.clipsToBounds = true
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
   
     
 
@@ -151,6 +176,13 @@ class MyEventDetailsController: UIViewController {
         mapViewContainer.widthAnchor.constraint(equalToConstant: 320).isActive = true
         mapViewContainer.heightAnchor.constraint(equalToConstant: 220).isActive = true
         
+        eventImageLabel.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 10).isActive = true
+        eventImageLabel.leftAnchor.constraint(equalTo: mapViewContainer.leftAnchor).isActive = true
+        
+        eventImage.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 10).isActive = true
+        eventImage.rightAnchor.constraint(equalTo: mapViewContainer.rightAnchor).isActive = true
+        eventImage.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        
 
     }
     
@@ -159,13 +191,11 @@ class MyEventDetailsController: UIViewController {
         self.eventLabelContent.text = self.interest
         self.placeLabelContent.text = self.place
         self.locationLabelContent.text = self.location
-        print(self.interest)
-        print(self.place)
-        print(self.location)
-        print(self.latitude)
-        print(self.longitude)
-        print(self.id)
         
+        dataProvider.fetchPhotoFromReference(self.reference!) { (img) in
+            self.eventImage.image = img
+        }
+    
     }
     
     override func viewDidLoad() {
@@ -181,6 +211,9 @@ class MyEventDetailsController: UIViewController {
         view.addSubview(placeLabelContent)
         view.addSubview(locationLabelContent)
         view.addSubview(mapViewContainer)
+        view.addSubview(eventLabel)
+        view.addSubview(eventImageLabel)
+        view.addSubview(eventImage)
 
         
         getDetails()

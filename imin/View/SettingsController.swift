@@ -19,7 +19,6 @@ class SettingsController: UIViewController, UIImagePickerControllerDelegate, UIN
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
         iv.image = UIImage(named: "test")
-        iv.backgroundColor = UIColor.orange
         iv.layer.cornerRadius = 50.0
         iv.layer.borderColor = UIColor(displayP3Red: 0/255, green: 153/255, blue: 204/255, alpha: 1).cgColor
         iv.layer.borderWidth = 1.0
